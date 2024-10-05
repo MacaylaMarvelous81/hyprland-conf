@@ -101,7 +101,7 @@ eval "$(navi widget zsh)"
 source <(fzf --zsh)
 
 # Waifu Chat Bot and Assistant
-alias waifu='source $HOME/linux-chat-bot/main.sh "$(pwd)"'
+# alias waifu='source $HOME/linux-chat-bot/main.sh "$(pwd)"'
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
 

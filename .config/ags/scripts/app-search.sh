@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # Directories where .desktop files are commonly located
-APP_DIRECTORIES=(
-    "/usr/share/applications/"
-    "$HOME/.local/share/applications/"
-)
+# APP_DIRECTORIES=(
+#     "/usr/share/applications/"
+#     "$HOME/.local/share/applications/"
+# )
+IFS=: read -r -d '' -a APP_DIRECTORIES < <(printf '%s:\\0' "$XDG_DATA_DIRS")
 
 # Directories where icons are commonly located
 ICON_DIRECTORIES=(

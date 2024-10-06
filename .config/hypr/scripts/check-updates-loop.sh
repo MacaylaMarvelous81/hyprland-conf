@@ -32,8 +32,9 @@ check_pull_needed() {
     LOCAL=$(git rev-parse @)
     REMOTE=$(git rev-parse origin/master)
 
+    BEHIND=$(git rev-list --count $LOCAL..$REMOTE)
     # Check if the current branch is behind the remote branch
-    if [ "$LOCAL" != "$REMOTE" ]; then
+    if [ "$BEHIND" -ne "0" ]; then
         # Get the number of commits we are behind
         BEHIND=$(git rev-list --count $LOCAL..$REMOTE)
         # notify-send "Repository Update" "We are behind by $BEHIND commits. Please pull the latest changes." --action="kitty git pull":"Pull Now"

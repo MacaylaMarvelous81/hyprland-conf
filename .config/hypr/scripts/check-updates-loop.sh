@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd ~/hyprland-conf
+
 # Function to check for updates
 check_updates() {
     # Sync package databases
@@ -24,11 +26,11 @@ check_updates() {
 # Function to check if the repository needs a pull
 check_pull_needed() {
     # Fetch the latest changes from the remote repository
-    git fetch
+    git fetch --all
 
     # Compare local and remote branches
     LOCAL=$(git rev-parse @)
-    REMOTE=$(git rev-parse @{u})
+    REMOTE=$(git rev-parse origin/master)
 
     # Check if the current branch is behind the remote branch
     if [ "$LOCAL" != "$REMOTE" ]; then

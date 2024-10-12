@@ -7,6 +7,12 @@
 # )
 IFS=: read -r -d '' -a APP_DIRECTORIES < <(printf '%s:\\0' "$XDG_DATA_DIRS")
 
+if [[ -z "$XDG_DATA_HOME" ]]; then
+    APP_DIRECTORIES+=("$HOME/.local/share")
+else
+    APP_DIRECTORIES+=("$XDG_DATA_HOME")
+fi
+
 # Directories where icons are commonly located
 ICON_DIRECTORIES=(
     "/usr/share/icons/hicolor/"

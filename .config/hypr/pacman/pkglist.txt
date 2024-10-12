@@ -116,3 +116,7 @@ hyprlock
 hyprpaper
 ttf-jetbrains-mono-nerd
 noto-fonts-emoji
+
+# Screenshots
+grim
+slurp

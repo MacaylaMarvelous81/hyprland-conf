@@ -1,5 +1,5 @@
 import { globalMargin, rightPanelExclusivity } from "variables";
-import { Notification_ } from "./components/notification"
+import { Notification_ } from "./rightPanel/components/notification"
 import { timeout } from "resource:///com/github/Aylur/ags/utils.js";
 
 const notifications = await Service.import("notifications")
@@ -32,7 +32,7 @@ function onDismissed(_, /** @type {number} */ id)
 
     if (!notification) return;
 
-    notification.reveal_child = false;
+    notification.child.attribute.hide();
 
     timeout(200, () => notification?.destroy())
 }

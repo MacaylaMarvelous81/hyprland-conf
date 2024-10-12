@@ -1,5 +1,4 @@
-import NotificationPopups from "widgets/rightPanel/NotificationPopups";
-import NotificationPopups_NEW from "widgets/rightPanel/NotificationPopups_not_mine_and_too_complicated_for_no_reason";
+import NotificationPopups from "widgets/NotificationPopups";
 import RightPanel from "widgets/rightPanel/RightPanel";
 import Bar from "widgets/bar/Bar";
 import AppLauncher from "widgets/AppLauncher";
@@ -8,6 +7,8 @@ import Progress from "widgets/Progress";
 import WallpaperSwitcher from "widgets/WallpaperSwitcher";
 
 import { getCssPath, refreshCss } from "utils/scss";
+import BarHover from "widgets/bar/BarHover";
+import RightPanelHover from "widgets/rightPanel/RightPanelHover";
 
 // required packages
 // gvfs is required for images
@@ -19,9 +20,13 @@ App.config({
   style: getCssPath(),
   windows: [
     Bar(),
+    BarHover(),
+
     NotificationPopups(),
-    // NotificationPopups_NEW(),
+
     RightPanel(),
+    RightPanelHover(),
+
     WallpaperSwitcher(),
     Media(),
     AppLauncher(),

@@ -2,8 +2,7 @@ import { readJSONFile, writeJSONFile } from "./json";
 
 const optionsPath = App.configDir + "/assets/options/options.json";
 
-// Options are stored in a json file, containing all the options, check if it exists, if not, create it
-const options = Variable<Options>({
+const defaultOptions = {
   "waifu": {
     "input_history": "",
     "visibility": true
@@ -11,14 +10,32 @@ const options = Variable<Options>({
   "rightPanel": {
     "exclusivity": true,
     "width": 300,
-    "visibility": true
+    "visibility": true,
+    "widgets": []
   }
-});
+}
+
+// Options are stored in a json file, containing all the options, check if it exists, if not, create it
+const options = Variable<Options>(defaultOptions);
+
+function deepMerge(target: any, source: any): any
+{
+  for (const key in source) {
+    if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+      // Recursively merge objects
+      target[key] = deepMerge(target[key] || {}, source[key]);
+    } else {
+      // Directly copy primitive values and arrays
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
 
 
 // Options are stored in a json file, containing all the options, check if it exists, if not, create it
 if (Object.keys(readJSONFile(optionsPath)).length !== 0) {
-  options.value = readJSONFile(optionsPath);
+  options.value = deepMerge(defaultOptions, readJSONFile(optionsPath));
 } else {
   writeJSONFile(optionsPath, options.value);
 }

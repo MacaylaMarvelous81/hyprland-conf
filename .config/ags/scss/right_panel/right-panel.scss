@@ -12,30 +12,32 @@
   // border: 1px solid $secondary;
   padding: 0px;
 
-  .window-actions {
-    margin: 5px;
-    .button {
-      padding: 0px 10px;
-      margin: 0px;
-      min-height: 10px;
-      box-shadow: unset;
+  .right-panel-actions {
+    @extend .module;
+    padding: 0px;
+    margin: 0px;
+    border-radius: 0px;
+    // border-left: 1px solid $secondary;
+    button {
+      border-radius: 0px;
+      padding: 5px;
     }
   }
 
-  .notification-panel {
-    @extend .module;
+  .notification-history {
+    // @extend .module;
     margin: 0px 10px;
-    padding: 5px;
 
     .filter {
+      margin-bottom: 5px;
       .spotify {
-        background: $green;
+        background: $spotify-background;
       }
       .clipboard {
-        background: $blue;
+        background: $blue-background;
       }
       .update {
-        background: $orange;
+        background: $orange-background;
       }
       button {
         padding: 5px 0px;
@@ -52,37 +54,33 @@
         }
       }
     }
+    .notification {
+      padding: 10px;
+      min-width: 0px;
 
-    .clear {
-      @extend .danger;
-    }
+      .summary {
+        color: $foreground;
+        font-size: 1.2rem;
+      }
 
-    .notification-event {
-      .notification {
-        margin: 5px 0px;
-        padding: 10px;
-        min-width: 0px;
+      .icon {
+        min-width: 20px;
+        min-height: 20px;
 
-        .summary {
-          color: $foreground;
-          font-size: 1.2rem;
+        image {
+          font-size: 25px;
         }
 
-        .icon {
-          min-width: 20px;
-          min-height: 20px;
-
-          image {
-            font-size: 25px;
-          }
-
-          box {
-            min-width: 40px;
-            min-height: 40px;
-            border-radius: 10px;
-          }
+        box {
+          min-width: 40px;
+          min-height: 40px;
+          border-radius: 10px;
         }
       }
+    }
+    .clear {
+      @extend .danger;
+      // margin-top: 5p;
     }
   }
 }

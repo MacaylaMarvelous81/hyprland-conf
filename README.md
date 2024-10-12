@@ -6,11 +6,15 @@ I use Arch BTW.. :)
 
 > **Feel free to open an issue ♡ (anything you can think of)!**
 
+# See Wiki
+
+> The full and organized [WIKI](https://hyprland-conf-wiki.vercel.app/)
+
 # Design Philosophy
 
 - Enhanced productivity
 - Faster responsiveness
-- [Wallpapers galore](https://github.com/AymanLyesri/hyprland-conf/tree/master/wallpapers)
+- [Wallpapers galore](https://github.com/AymanLyesri/hyprland-conf/tree/master/.config/wallpapers)
 - Smooth animations
 - Vibrant color schemes
 
@@ -61,11 +65,13 @@ I use Arch BTW.. :)
 - Add tutorials for each part of the dot-files **(WIP)**
 - Continuous improvements and polishing **(INDEFINITELY)**
 
-# [KeyBinds](https://github.com/AymanLyesri/hyprland-conf/blob/master/.config/hypr/configs/keybinds.conf)
+# KeyBinds
+
+KeyBinds are displayed and organized [Here](https://github.com/AymanLyesri/hyprland-conf/blob/master/.config/hypr/configs/keybinds.conf), be sure to check them out!
 
 # Installation Guide
 
-### Step 1: Clone the Repository
+### Clone the Repository
 
 > **Notice:** Repo has been Cleaned up from 2Gb to 90Mb, sorry for the inconvenience.
 
@@ -75,38 +81,13 @@ I use Arch BTW.. :)
 git clone --depth 1 https://github.com/AymanLyesri/hyprland-conf.git
 ```
 
-### Step 2: Move the Repository to Your Home Directory
+### The Install Script
+
+> Change to the repository directory and run the install script
 
 ```bash
-mv <repository_folder>/* $HOME/
-```
-
-### Step 3: Reboot Your System
-
-```bash
-sudo reboot
-```
-
-# [Package List](https://github.com/AymanLyesri/hyprland-conf/blob/master/.config/hypr/pacman/pkglist.txt) and Installation
-
-**To install packages:**
-
-> **Warning:** [Yay](https://github.com/Jguer/yay) need to be installed for this to work properly.
-
-> Some packages may be missing or added unnecessarily.
-
-```bash
-#For installing and updating essential packages (default:yay)
-bash $HOME/.config/hypr/pacman/update.sh [yay,paru...]
-```
-
-**To generate a package list:** `optional`
-
-```bash
-cd $HOME
-pacman -Qqen > $HOME/.config/hypr/pacman/pkglist.txt
-#OR
-yay -Qqen > $HOME/.config/hypr/pacman/pkglist.txt
+cd hyprland-conf
+bash .config/hypr/maintenance/INSTALL.sh
 ```
 
 # Tips
@@ -120,12 +101,13 @@ yay -Qqen > $HOME/.config/hypr/pacman/pkglist.txt
 
 - I use **Dvorak**, so QWERTY users might face some issues.
 
+# Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=aymanlyesri/hyprland-conf&type=Date)](https://star-history.com/#aymanlyesri/hyprland-conf&Date)
+
 # Visuals
 
 ### Application Launcher
-
-<details>
-  <summary>SCREENSHOTS</summary>
 
 #### Apps
 
@@ -143,49 +125,27 @@ yay -Qqen > $HOME/.config/hypr/pacman/pkglist.txt
 
 ![1727169383_grim](https://github.com/user-attachments/assets/6d3ffd8e-8693-4e04-952e-a6d54d707c77)
 
-</details>
-
 ### Right Panel
 
-<details>
-  <summary>SCREENSHOTS</summary>
-  <img src="https://github.com/user-attachments/assets/52d5ea0c-fd64-4890-8bcb-b4832819ce2a" alt="Right Panel">
-</details>
+![screenshot](https://github.com/user-attachments/assets/52d5ea0c-fd64-4890-8bcb-b4832819ce2a)
 
 ### Media Player
 
-<details>
-  <summary>SCREENSHOTS</summary>
-  <img src="https://github.com/user-attachments/assets/1c56869d-8b83-457a-8f28-b6006ae83fdb" alt="Media Player">
-</details>
+![screenshot](https://github.com/user-attachments/assets/1c56869d-8b83-457a-8f28-b6006ae83fdb)
 
 ### Wallpaper Switcher
 
-<details>
-  <summary>SCREENSHOTS</summary>
-
 ![1727169881_grim](https://github.com/user-attachments/assets/821dc6b8-386c-4fb2-9223-05f44e0ba046)
-
-</details>
 
 ### Theme Switching
 
-<details>
-  <summary>SCREENSHOTS</summary>
-  <img src="https://github.com/user-attachments/assets/f3321fb4-9992-4133-b860-c2e7b8f246d6" alt="Theme Switching 1">
-  <img src="https://github.com/user-attachments/assets/87da3faa-fbc4-47d8-9901-354e54f5452e" alt="Theme Switching 2">
-</details>
+![screenshot](https://github.com/user-attachments/assets/f3321fb4-9992-4133-b860-c2e7b8f246d6)
+![screenshot](https://github.com/user-attachments/assets/87da3faa-fbc4-47d8-9901-354e54f5452e)
 
 ### Screenshot of All Workspaces
 
-<details>
-  <summary>SCREENSHOTS</summary>
-  <img src="https://github.com/user-attachments/assets/3166118e-3023-4434-985b-23ae02b8aed2" alt="All Workspaces">
-</details>
+![screenshot](https://github.com/user-attachments/assets/3166118e-3023-4434-985b-23ae02b8aed2)
 
 ### Screenshot of All Workspaces ("Old")
 
-<details>
-  <summary>SCREENSHOTS</summary>
-  <img src="https://github.com/AymanLyesri/hyprland-conf/assets/80812811/c84884a7-ce5b-4363-a2fb-8a6ccebc05c5" alt="Old Workspaces">
-</details>
+![screenshot](https://github.com/AymanLyesri/hyprland-conf/assets/80812811/c84884a7-ce5b-4363-a2fb-8a6ccebc05c5)

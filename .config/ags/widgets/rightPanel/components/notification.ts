@@ -79,7 +79,7 @@ export function Notification_(n: Notification, new_Notification = false, popup =
             // hpack: action[0].includes("Delete") ? "end" : "fill",
             on_clicked: () =>
             {
-                Hyprland.sendMessage(`dispatch exec ${action[1]}`).catch((err) => Utils.notify(err))
+                Hyprland.messageAsync(`dispatch exec ${action[1]}`).catch((err) => Utils.notify(err))
             },
             hexpand: true,
             child: Widget.Label(action[0].includes("Delete") ? "󰆴" : action[0]),
@@ -94,7 +94,7 @@ export function Notification_(n: Notification, new_Notification = false, popup =
     //         on_clicked: () =>
     //         {
     //             const [command, action] = label.split(':');
-    //             Hyprland.sendMessage(`dispatch exec ${command}`).then(() => Utils.execAsync('killall notify-send'))
+    //             Hyprland.messageAsync(`dispatch exec ${command}`).then(() => Utils.execAsync('killall notify-send'))
 
     //             // n.invoke(id)
 
@@ -116,9 +116,13 @@ export function Notification_(n: Notification, new_Notification = false, popup =
 
     const Box = Widget.Box(
         {
-            attribute: { id: n.id },
+            attribute: {
+                id: n.id, hide: () =>
+                {
+                    Revealer.reveal_child = false;
+                }
+            },
             class_name: `notification ${n.urgency} ${n.app_name}`,
-            // css: new_Notification ? "animation: background-pop 0.5s ease;" : "",
             vertical: true,
         },
         Widget.Box([

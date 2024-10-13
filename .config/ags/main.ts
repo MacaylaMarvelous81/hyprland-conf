@@ -25,7 +25,7 @@ App.config({
     NotificationPopups(),
 
     RightPanel(),
-    RightPanelHover(),
+    // RightPanelHover(),
 
     WallpaperSwitcher(),
     Media(),

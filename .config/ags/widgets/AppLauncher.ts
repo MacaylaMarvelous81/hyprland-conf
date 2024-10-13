@@ -79,9 +79,11 @@ function Entry()
                             } else if (containsOperator(getArgumentBeforeSpace(text))) {
                                 Results.value = [{ app_name: arithmetic(text), app_exec: `wl-copy ${arithmetic(text)}`, app_type: 'calc' }];
                             } else {
-                                Results.value = readJson(await Utils.execAsync(`${App.configDir}/scripts/app-search.sh ${text}`));
-                                if (Results.value.length == 0)
-                                    Results.value = [{ app_name: `Try ${text}`, app_exec: text, app_icon: "󰋖" }];
+                                Utils.execAsync(`${App.configDir}/scripts/app-search.sh ${text}`).then((output) => {
+                                    Results.value = readJson(output);
+                                    if (Results.value.length == 0)
+                                        Results.value = [{ app_name: `Try ${text}`, app_exec: text, app_icon: "󰋖" }];
+                                });
                             }
                         } catch (err) {
                             print(err);

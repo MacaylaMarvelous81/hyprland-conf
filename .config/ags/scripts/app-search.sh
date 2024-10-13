@@ -1,21 +1,18 @@
 #!/bin/bash
 
 # Directories where .desktop files are commonly located
-# APP_DIRECTORIES=(
-#     "/usr/share/applications/"
-#     "$HOME/.local/share/applications/"
-# )
-IFS=: read -r -d '' -a APP_DIRECTORIES < <(printf '%s:\\0' "$XDG_DATA_DIRS")
-
-if [[ -z "$XDG_DATA_HOME" ]]; then
-    APP_DIRECTORIES+=("$HOME/.local/share")
-else
-    APP_DIRECTORIES+=("$XDG_DATA_HOME")
-fi
+APP_DIRECTORIES=(
+    "/usr/share/applications/"
+    "$HOME/.local/share/applications/"
+    "/var/lib/flatpak/exports/share/applications"
+    "$HOME/.local/share/flatpak/exports/share/applications"
+)
 
 # Directories where icons are commonly located
 ICON_DIRECTORIES=(
     "/usr/share/icons/hicolor/"
+    "/var/lib/flatpak/exports/share/icons/hicolor"
+    "$HOME/.local/share/flatpak/exports/share/icons/hicolor"
     # "/usr/share/pixmaps/"
     # "$HOME/.local/share/icons/"
 )

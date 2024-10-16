@@ -27,7 +27,6 @@ const SearchImage = () => Utils.execAsync(`bash -c "xdg-open 'https://danbooru.d
     .catch(err => Utils.notify({ summary: 'Error', body: err }))
 
 const CopyImage = () => Utils.execAsync(`bash -c "wl-copy --type image/png < ${waifuPath}"`)
-    .then(() => Utils.notify({ summary: 'Clipboard', body: 'waifu copied to clipboard' }))
     .catch(err => Utils.notify({ summary: 'Error', body: err }))
 
 const OpenImage = () => Hyprland.messageAsync("dispatch exec [float;size 50%] feh --scale-down " + waifuPath)
@@ -63,20 +62,18 @@ function Actions()
         ],
     })
 
-    const Entry = Widget.EventBox({
+    const Entry = Widget.Entry({
         class_name: "input",
-        child: Widget.Entry({
-            placeholder_text: 'Tags/ID',
-            text: getOption("waifu.input_history"),
-            on_accept: (self) =>
-            {
-                if (self.text == null || self.text == "") {
-                    return
-                }
-                setOption("waifu.input_history", self.text)
-                GetImageFromApi(self.text)
-            },
-        }),
+        placeholder_text: 'Tags/ID',
+        text: getOption("waifu.input_history"),
+        on_accept: (self) =>
+        {
+            if (self.text == null || self.text == "") {
+                return
+            }
+            setOption("waifu.input_history", self.text)
+            GetImageFromApi(self.text)
+        },
     })
 
     const favoriteMenu = Widget.Menu({
@@ -140,7 +137,7 @@ function Actions()
                     label: "",
                     class_name: "entry-search",
                     hexpand: true,
-                    on_clicked: () => Entry.child.activate(),
+                    on_clicked: () => Entry.activate(),
                 }),
                 Entry,
                 Widget.ToggleButton({
@@ -199,10 +196,11 @@ function Actions()
 function Image()
 {
     return Widget.EventBox({
-        class_name: "image",
+
         on_primary_click: async () => OpenImage(),
         on_secondary_click: async () => SearchImage(),
         child: Widget.Box({
+            class_name: "image",
             hexpand: false,
             vexpand: false,
             child: Actions(),
@@ -211,7 +209,7 @@ function Image()
                 return `
                 background-image: url("${waifuPath}");
                 min-height: ${Number(imageDetails.image_height) / Number(imageDetails.image_width) * width}px;
-                box-shadow: 0 0 5px 0 ${getDominantColor(waifuPath)};
+
                 `
             }),
         }),

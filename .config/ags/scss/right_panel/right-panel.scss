@@ -55,13 +55,8 @@
       }
     }
     .notification {
-      padding: 10px;
       min-width: 0px;
-
-      .summary {
-        color: $foreground;
-        font-size: 1.2rem;
-      }
+      min-height: 0px;
 
       .icon {
         min-width: 20px;
@@ -70,17 +65,10 @@
         image {
           font-size: 25px;
         }
-
-        box {
-          min-width: 40px;
-          min-height: 40px;
-          border-radius: 10px;
-        }
       }
     }
     .clear {
       @extend .danger;
-      // margin-top: 5p;
     }
   }
 }

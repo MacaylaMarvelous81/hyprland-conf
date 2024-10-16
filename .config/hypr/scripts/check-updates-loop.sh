@@ -5,10 +5,13 @@ cd ~/hyprland-conf
 # Function to check for updates
 check_updates() {
     # Sync package databases
+    # Don't do below because installing new packages without updating runs the risk of partial upgrades
     # pacman -Sy
 
     # Check for updates without actually performing the upgrade
-    updates=$(yay -Qu)
+    # updates=$(yay -Qu)
+    # Script from pacman-contrib
+    updates=$(checkupdates)
 
     if [ -z "$updates" ]; then
         message="Your system is up to date."

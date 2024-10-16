@@ -1,3 +1,5 @@
+
+import { timeout } from "resource:///com/github/Aylur/ags/utils.js";
 import { globalTransition } from "variables";
 
 const hyprland = await Service.import("hyprland");
@@ -45,7 +47,7 @@ function Wallpapers()
         })
     }
 
-    const get_wallpapers: any = (self) =>
+    const get_wallpapers = () =>
     {
         const activeId = hyprland.active.workspace.bind("id");
 
@@ -61,7 +63,6 @@ function Wallpapers()
                 label: `${key}`,
                 on_primary_click: (_, event) =>
                 {
-                    // allWallpapers().popup_at_pointer(event)
                     bottom.child.reveal_child = true
                     selectedWorkspace = key
                 },
@@ -69,21 +70,50 @@ function Wallpapers()
         })
     }
 
+    const reset = Widget.Button({
+        vpack: "center",
+        class_name: "reload-wallpapers",
+        label: "󰑐",
+        on_primary_click: () =>
+        {
+            Utils.execAsync(`bash -c "$HOME/.config/hypr/hyprpaper/reload.sh"`).catch(err => print(err));
+        }
+    })
+
     const top = Widget.Box({
         hexpand: true,
         vexpand: true,
+        hpack: "center",
         spacing: 10,
-        children: [...get_wallpapers(), Widget.Button({
-            vpack: "center",
-            class_name: "reload-wallpapers",
-            label: "󰑐",
-            on_primary_click: () =>
-            {
-                Utils.execAsync(`bash -c "$HOME/.config/hypr/hyprpaper/reload.sh"`).catch(err => print(err));
-            }
-        })
-        ]
+        children: [...get_wallpapers(), reset]
     });
+
+    const random = Widget.Button({
+        vpack: "center",
+        class_name: "random-wallpaper",
+        label: "",
+        on_primary_click: () =>
+        {
+            Utils.execAsync(`bash -c "$HOME/.config/hypr/hyprpaper/set-wallpaper.sh ${selectedWorkspace}"`)
+                .then(() => bottom.child.reveal_child = false)
+                .finally(() =>
+                {
+                    let new_wallpaper = JSON.parse(Utils.exec(App.configDir + '/scripts/get-wallpapers.sh --current'))[selectedWorkspace - 1]
+                    top.children[selectedWorkspace - 1].css = `background-image: url('${new_wallpaper}');`
+                })
+                .catch(err => Utils.notify(err));
+        }
+    })
+
+    const hide = Widget.Button({
+        vpack: "center",
+        class_name: "stop-selection",
+        label: "",
+        on_primary_click: () =>
+        {
+            bottom.child.reveal_child = false
+        }
+    })
 
     const bottom = Widget.Box({
         hexpand: true,
@@ -93,19 +123,11 @@ function Wallpapers()
             visible: true,
             reveal_child: false,
             transition: "slide_down",
-            transition_duration: globalTransition * 2,
+            transition_duration: globalTransition,
             child: Widget.Box({
-                children: [allWallpapers(), Widget.Button({
-                    vpack: "center",
-                    class_name: "stop-selection",
-                    label: "",
-                    on_primary_click: () =>
-                    {
-                        bottom.child.reveal_child = false
-                    }
-                })
-                ]
+                children: [random, allWallpapers(), hide]
             }),
+            // setup: (self) => timeout(1, () => self.reveal_child = false)
         })
     });
 

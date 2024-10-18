@@ -1,0 +1,14 @@
+{
+    "waifu": {
+        "input_history": "",
+        "visibility": false
+    },
+    "rightPanel": {
+        "exclusivity": true,
+        "width": 300,
+        "visibility": false,
+        "widgets": [
+            "NotificationHistory"
+        ]
+    }
+}

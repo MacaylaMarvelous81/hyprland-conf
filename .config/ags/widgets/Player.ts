@@ -1,9 +1,8 @@
-import { Mpris, MprisPlayer } from "types/service/mpris"
+import { MprisPlayer } from "types/service/mpris"
 import { getDominantColor } from "utils/image"
-import { globalMargin } from "variables"
+import { rightPanelWidth } from "variables"
 
 const mpris = await Service.import("mpris")
-const players = mpris.bind("players")
 
 const FALLBACK_ICON = "audio-x-generic-symbolic"
 const PLAY_ICON = "media-playback-start-symbolic"
@@ -21,7 +20,7 @@ function lengthStr(length)
 }
 
 /** @param {import('types/service/mpris').MprisPlayer} player */
-function Player(player: MprisPlayer)
+export function Player(player: MprisPlayer, playerType: "popup" | "widget")
 {
     const dominantColor = player.bind("cover_path").as((path) => getDominantColor(path))
     const img = Widget.Box({
@@ -52,7 +51,7 @@ function Player(player: MprisPlayer)
     const positionSlider = Widget.Slider({
         class_name: "slider",
         draw_value: false,
-        css: dominantColor.as(c => `highlight{background: ${c}}`),
+        css: dominantColor.as(c => `highlight{background: ${c}00}`),
         on_change: ({ value }) => player.position = value * player.length,
         visible: player.bind("length").as(l => l > 0),
         setup: self =>
@@ -95,7 +94,7 @@ function Player(player: MprisPlayer)
         class_name: "icon",
         hexpand: true,
         hpack: "end",
-        vpack: "start",
+        vpack: "center",
         tooltip_text: player.identity || "",
         icon: player.bind("entry").transform(entry =>
         {
@@ -134,9 +133,15 @@ function Player(player: MprisPlayer)
 
     return Widget.EventBox({ class_name: "player-event" }, Widget.Box(
         {
-            class_name: "player",
+            vexpand: false,
+            class_name: `player ${playerType}`,
+            css: playerType == "widget" ? `
+            min-height:${rightPanelWidth.value}px;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                url('${player.cover_path}');
+            `: ``,
         },
-        img,
+        playerType == 'popup' ? img : Widget.Box(),
         Widget.Box(
             {
                 vertical: true,
@@ -146,13 +151,13 @@ function Player(player: MprisPlayer)
             Widget.Box({
                 children:
                     [
-                        title,
+                        artist,
                         icon,
                     ]
             }),
 
             Widget.Box({ vexpand: true }), // spacer
-            artist,
+            title,
             positionSlider,
             Widget.CenterBox({
                 start_widget: positionLabel,
@@ -169,26 +174,3 @@ function Player(player: MprisPlayer)
     )
     )
 }
-
-export default () =>
-{
-    return Widget.Window({
-        name: `media`,
-        // class_name: "media",
-        anchor: ["top"],
-        margins: [5, globalMargin, globalMargin, globalMargin],
-        visible: false,
-        child: Widget.Box({
-            class_name: "media-widget",
-            child: Widget.EventBox({
-                on_hover_lost: () => App.closeWindow("media"),
-                child: Widget.Box({
-                    vertical: true,
-                    spacing: 10,
-                    children: players.as(p => { return p.map(Player) }),
-                })
-            }),
-        }),
-    })
-}
-

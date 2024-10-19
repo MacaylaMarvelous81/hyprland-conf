@@ -33,7 +33,7 @@ check_pull_needed() {
 
     # Compare local and remote branches
     LOCAL=$(git rev-parse @)
-    REMOTE=$(git rev-parse origin/master)
+    REMOTE=$(git rev-parse upstream/master)
 
     BEHIND=$(git rev-list --count $LOCAL..$REMOTE)
     # Check if the current branch is behind the remote branch

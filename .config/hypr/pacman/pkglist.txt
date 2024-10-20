@@ -101,7 +101,6 @@ feh
 kitty
 light
 lolcat
-spotify-launcher
 cava
 
 # _____ _                                                _   _   _ ___ 

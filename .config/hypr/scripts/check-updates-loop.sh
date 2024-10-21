@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ~/hyprland-conf
+cd ~/conf/hyprland-conf
 
 # Function to check for updates
 check_updates() {

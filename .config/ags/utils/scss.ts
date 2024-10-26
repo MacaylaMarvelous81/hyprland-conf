@@ -1,15 +1,24 @@
-// target css file
-const css = `/tmp/tmp-style.css`
+import { globalOpacity } from "variables"
 
-export const getCssPath = () => css
+// target css file
+const tmpCss = `/tmp/tmp-style.css`
+const tmpScss = `/tmp/tmp-style.scss`
+const cache_dir = `${App.configDir}/../../.cache`
+const scss_dir = `${App.configDir}/scss`
+
+const walColors = `${App.configDir}/../../.cache/wal/colors.scss`
+const defaultColors = `${App.configDir}/scss/defaultColors.scss`
+
+export const getCssPath = () => tmpCss
 
 export function refreshCss()
 {
     // main scss file
     const scss = `${App.configDir}/scss/style.scss`
-    Utils.exec(`sassc ${scss} ${css}`)
+
+    Utils.exec(`bash -c "echo '$OPACITY: ${globalOpacity.value};' | cat - ${defaultColors} ${walColors} ${scss} > ${tmpScss} | sassc ${tmpScss} ${tmpCss} -I ${scss_dir} -I ${cache_dir}"`)
     App.resetCss()
-    App.applyCss(css)
+    App.applyCss(tmpCss)
 }
 
 Utils.monitorFile(

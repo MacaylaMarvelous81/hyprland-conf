@@ -1,13 +1,15 @@
 import { readJSONFile } from "utils/json";
 import { Waifu } from "../../../interfaces/waifu.interface";
-import { globalTransition, rightPanelWidth, waifuCurrent, waifuFavorites, waifuVisibility } from "variables";
+import { globalTransition, rightPanelWidth, waifuCurrent, waifuFavorites } from "variables";
 import { closeProgress, openProgress } from "../../Progress";
-import { getSetting, setSetting } from "utils/settings";
+import { getSetting, globalSettings, setSetting } from "utils/settings";
 import { timeout } from "resource:///com/github/Aylur/ags/utils/timeout.js";
+import GLib from "types/@girs/glib-2.0/glib-2.0";
 const Hyprland = await Service.import('hyprland')
 
 const waifuPath = App.configDir + "/assets/waifu/waifu.png"
 const jsonPath = App.configDir + "/assets/waifu/waifu.json"
+const favoritesPath = App.configDir + "/assets/waifu/favorites/"
 
 
 const imageDetails = Variable<Waifu>(readJSONFile(`${App.configDir}/assets/waifu/waifu.json`))
@@ -21,7 +23,7 @@ const GetImageFromApi = (param = "") =>
     {
         closeProgress()
         imageDetails.value = JSON.parse(Utils.readFile(`${App.configDir}/assets/waifu/waifu.json`))
-        waifuCurrent.value = String(imageDetails.value.id)
+        waifuCurrent.value = { id: String(imageDetails.value.id), preview: String(imageDetails.value.preview_file_url) }
     }).catch((error) => Utils.notify({ summary: "Error", body: error }))
 }
 
@@ -36,14 +38,33 @@ const OpenImage = () => Hyprland.messageAsync("dispatch exec [float;size 50%] fe
 
 const addToFavorites = () =>
 {
-    if (!waifuFavorites.value.some(favorite => favorite === waifuCurrent.value)) {
-        waifuFavorites.value = [...waifuFavorites.value, waifuCurrent.value];
-        Utils.notify({ summary: 'Waifu', body: `${waifuCurrent.value} Favorite added` })
+    if (!waifuFavorites.value.find(fav => fav.id === waifuCurrent.value.id)) {
+        Utils.execAsync(`bash -c "curl -o ${favoritesPath + waifuCurrent.value.id}.jpg ${waifuCurrent.value.preview}"`)
+            .then(() => waifuFavorites.value = [...waifuFavorites.value, waifuCurrent.value])
+            .finally(() => Utils.notify({ summary: 'Waifu', body: `Image ${waifuCurrent.value.id} Added to favorites` }))
+            .catch(err => Utils.notify({ summary: 'Error', body: err }))
     }
     else {
-        Utils.notify({ summary: 'Waifu', body: `${waifuCurrent.value} Already favored` })
+        Utils.notify({ summary: 'Waifu', body: `Image ${waifuCurrent.value.id} Already favored` })
     }
+}
 
+const downloadAllFavorites = () =>
+{
+
+    waifuFavorites.value.forEach(fav =>
+    {
+        Utils.execAsync(`bash -c "curl -o ${favoritesPath + fav.id}.jpg ${fav.preview}"`)
+            .catch(err => Utils.notify({ summary: 'Error', body: err }))
+    })
+
+}
+
+const removeFavorite = (favorite) =>
+{
+    Utils.execAsync(`rm ${favoritesPath + favorite.id}.jpg`)
+        .then(() => Utils.notify({ summary: 'Waifu', body: `${favorite.id} Favorite removed` }))
+        .finally(() => waifuFavorites.value = waifuFavorites.value.filter(fav => fav !== favorite))
 }
 
 const PinImageToTerminal = () =>
@@ -152,40 +173,40 @@ function Actions()
         reveal_child: false,
         child: Widget.Scrollable({
             hscroll: 'never',
-            css: "min-width: 100px",
             child: Widget.Box({
                 class_name: "favorites",
                 vertical: true,
-                children: waifuFavorites.bind().as((favorites) =>
-                {
-                    return [...favorites.map((favorite) =>
-                        Widget.EventBox({
+                spacing: 5,
+                children: [
+                    Widget.Box({
+                        vertical: true,
+                        children: waifuFavorites.bind().as((favorites) => favorites.map((favorite) => Widget.EventBox({
                             class_name: "favorite-event",
                             child: Widget.Box({
                                 class_name: "favorite",
-                                spacing: 10,
-                                children: [Widget.Label({
-                                    label: String(favorite),
-                                }), Widget.Button({
+                                css: `background-image: url("${favoritesPath + favorite.id}.jpg");`,
+                                child: Widget.Button({
                                     hexpand: true,
+                                    vpack: "start",
                                     hpack: "end",
                                     class_name: "delete",
                                     label: "",
-                                    on_primary_click: () => waifuFavorites.value = waifuFavorites.value.filter(fav => fav !== favorite)
-                                })],
+                                    on_primary_click: () => removeFavorite(favorite),
+                                }),
                             }),
                             on_primary_click: () =>
                             {
-                                GetImageFromApi(String(favorite))
+                                GetImageFromApi(String(favorite.id))
                                 left.reveal_child = false
                             },
-                        })
-                    ), Widget.Button({
+                        })))
+                    }),
+                    Widget.Button({
                         label: "",
                         class_name: "add",
                         on_primary_click: () => addToFavorites()
-                    })]
-                })
+                    })
+                ],
             })
         })
     })
@@ -248,7 +269,11 @@ function Image()
                 min-height: ${Number(imageDetails.image_height) / Number(imageDetails.image_width) * width}px;
                 `
             }),
-            setup: () => { if (Utils.readFile(waifuPath) == '' || Utils.readFile(jsonPath) == '') GetImageFromApi(waifuCurrent.value) },
+            setup: () =>
+            {
+                if (Utils.readFile(waifuPath) == '' || Utils.readFile(jsonPath) == '') GetImageFromApi(waifuCurrent.value)
+                // downloadAllFavorites()
+            },
         }),
     })
 }
@@ -259,7 +284,7 @@ export default () =>
     return Widget.Revealer({
         transitionDuration: globalTransition,
         transition: 'slide_down',
-        reveal_child: waifuVisibility.bind(),
+        reveal_child: globalSettings.bind().as(s => s.waifu.visibility),
         child: Widget.EventBox({
             class_name: "waifu-event",
             child: Widget.Box(
@@ -276,8 +301,9 @@ export default () =>
 export function WaifuVisibility()
 {
     return Widget.ToggleButton({
-        onToggled: ({ active }) => { waifuVisibility.value = active },
+        active: globalSettings.value.waifu.visibility,
+        onToggled: ({ active }) => setSetting("waifu.visibility", active),
         label: "󱙣",
         class_name: "waifu icon",
-    }).hook(waifuVisibility, (self) => self.active = waifuVisibility.value, "changed")
+    })
 }

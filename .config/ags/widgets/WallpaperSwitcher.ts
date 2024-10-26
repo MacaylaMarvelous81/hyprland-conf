@@ -1,40 +1,38 @@
 
-import { timeout } from "resource:///com/github/Aylur/ags/utils.js";
+
 import { globalTransition } from "variables";
 
 const hyprland = await Service.import("hyprland");
 
-var selectedWorkspace = 0
+const allWallpapers = Variable<string[]>(JSON.parse(Utils.exec(App.configDir + '/scripts/get-wallpapers.sh --all')))
+
+const selectedWorkspace = Variable<number>(0)
 
 function Wallpapers()
 {
-    const allWallpapers = () =>
+    const getAllWallpapers = () =>
     {
-        const allWallpapers: any[] = JSON.parse(Utils.exec(App.configDir + '/scripts/get-wallpapers.sh --all'))
 
         const Box = Widget.Box({
             class_name: "all-wallpapers",
             spacing: 5,
-            children: allWallpapers.map((wallpaper, key) =>
+            children: allWallpapers.bind().as((wallpapers) => wallpapers.map((wallpaper, key) =>
             {
                 return Widget.Button({
                     class_name: "wallpaper",
-                    hexpand: true,
-                    vexpand: true,
                     css: `background-image: url('${wallpaper}');`,
                     on_primary_click: () =>
                     {
-                        Utils.execAsync(`bash -c "$HOME/.config/hypr/hyprpaper/set-wallpaper.sh ${selectedWorkspace} ${wallpaper}"`)
-                            .then(() => bottom.child.reveal_child = false)
+                        Utils.execAsync(`bash -c "$HOME/.config/hypr/hyprpaper/set-wallpaper.sh ${selectedWorkspace.value} ${wallpaper}"`)
                             .finally(() =>
                             {
-                                let new_wallpaper = JSON.parse(Utils.exec(App.configDir + '/scripts/get-wallpapers.sh --current'))[selectedWorkspace - 1]
-                                top.children[selectedWorkspace - 1].css = `background-image: url('${new_wallpaper}');`
+                                let new_wallpaper = JSON.parse(Utils.exec(App.configDir + '/scripts/get-wallpapers.sh --current'))[selectedWorkspace.value - 1]
+                                top.children[selectedWorkspace.value - 1].css = `background-image: url('${new_wallpaper}');`
                             })
                             .catch(err => Utils.notify(err));
                     }
                 })
-            }),
+            }))
         })
 
         return Widget.Scrollable({
@@ -47,7 +45,9 @@ function Wallpapers()
         })
     }
 
-    const get_wallpapers = () =>
+
+
+    const getWallpapers = () =>
     {
         const activeId = hyprland.active.workspace.bind("id");
 
@@ -64,7 +64,7 @@ function Wallpapers()
                 on_primary_click: (_, event) =>
                 {
                     bottom.child.reveal_child = true
-                    selectedWorkspace = key
+                    selectedWorkspace.value = key
                 },
             })
         })
@@ -76,7 +76,9 @@ function Wallpapers()
         label: "󰑐",
         on_primary_click: () =>
         {
-            Utils.execAsync(`bash -c "$HOME/.config/hypr/hyprpaper/reload.sh"`).catch(err => print(err));
+            Utils.execAsync(`bash -c "$HOME/.config/hypr/hyprpaper/reload.sh"`)
+                .finally(() => allWallpapers.value = JSON.parse(Utils.exec(App.configDir + '/scripts/get-wallpapers.sh --all')))
+                .catch(err => print(err));
         }
     })
 
@@ -85,7 +87,7 @@ function Wallpapers()
         vexpand: true,
         hpack: "center",
         spacing: 10,
-        children: [...get_wallpapers(), reset]
+        children: [...getWallpapers(), reset]
     });
 
     const random = Widget.Button({
@@ -94,14 +96,26 @@ function Wallpapers()
         label: "",
         on_primary_click: () =>
         {
-            Utils.execAsync(`bash -c "$HOME/.config/hypr/hyprpaper/set-wallpaper.sh ${selectedWorkspace}"`)
-                .then(() => bottom.child.reveal_child = false)
+            const randomWallpaper = allWallpapers.value[Math.floor(Math.random() * allWallpapers.value.length)];
+
+            Utils.execAsync(`bash -c "$HOME/.config/hypr/hyprpaper/set-wallpaper.sh ${selectedWorkspace.value} ${randomWallpaper}"`)
                 .finally(() =>
                 {
-                    let new_wallpaper = JSON.parse(Utils.exec(App.configDir + '/scripts/get-wallpapers.sh --current'))[selectedWorkspace - 1]
-                    top.children[selectedWorkspace - 1].css = `background-image: url('${new_wallpaper}');`
+                    let new_wallpaper = JSON.parse(Utils.exec(App.configDir + '/scripts/get-wallpapers.sh --current'))[selectedWorkspace.value - 1]
+                    top.children[selectedWorkspace.value - 1].css = `background-image: url('${new_wallpaper}');`
                 })
                 .catch(err => Utils.notify(err));
+        }
+    })
+
+    const custom = Widget.ToggleButton({
+        vpack: "center",
+        class_name: "custom-wallpaper",
+        label: "all",
+        on_toggled: (self) =>
+        {
+            allWallpapers.value = JSON.parse(Utils.exec(App.configDir + `/scripts/get-wallpapers.sh ${self.active ? "--custom" : "--all"}`))
+            self.label = self.active ? "custom" : "all"
         }
     })
 
@@ -115,6 +129,18 @@ function Wallpapers()
         }
     })
 
+    const selectedWorkspaceLabel = Widget.Label({
+        class_name: "button",
+        label: selectedWorkspace.bind().as((i) => `W -> ${i}`)
+    })
+
+    const actions = Widget.Box({
+        class_name: "actions",
+        hexpand: true,
+        hpack: "center",
+        children: [selectedWorkspaceLabel, random, custom, hide]
+    })
+
     const bottom = Widget.Box({
         hexpand: true,
         vexpand: true,
@@ -125,7 +151,8 @@ function Wallpapers()
             transition: "slide_down",
             transition_duration: globalTransition,
             child: Widget.Box({
-                children: [random, allWallpapers(), hide]
+                vertical: true,
+                children: [actions, getAllWallpapers()]
             }),
             // setup: (self) => timeout(1, () => self.reveal_child = false)
         })

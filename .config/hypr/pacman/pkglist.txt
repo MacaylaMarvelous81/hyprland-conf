@@ -114,7 +114,12 @@ cava
 # / _ \ '_ \| '_ \ / _` | '_ \ / __/ _ \ '_ ` _ \ / _ \ '_ \| __/ __|
 #|  __/ | | | | | | (_| | | | | (_|  __/ | | | | |  __/ | | | |_\__ \
 # \___|_| |_|_| |_|\__,_|_| |_|\___\___|_| |_| |_|\___|_| |_|\__|___/
-#          
+#      
+sddm
+where-is-my-sddm-theme-git
+pywalfox
+python-colorthief
+python-pywal
 fastfetch
 starship
 gtk4

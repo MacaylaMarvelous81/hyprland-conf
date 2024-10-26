@@ -1,15 +1,11 @@
 import brightness from "brightness";
-import { barLock, rightPanelVisibility, waifuVisibility } from "variables";
+import { barLock, DND, rightPanelVisibility } from "variables";
 import { closeProgress, openProgress } from "widgets/Progress";
 import { custom_revealer } from "widgets/revealer";
 
 const audio = await Service.import("audio");
 const battery = await Service.import("battery");
 const SystemTray = await Service.import("systemtray");
-
-// widgets can be only assigned as a child in one container
-// so to make a reuseable widget, make it a function
-// then you can simply instantiate one by calling it
 
 function Theme()
 {
@@ -37,6 +33,7 @@ function Theme()
 function Brightness()
 {
     const slider = Widget.Slider({
+        width_request: 100,
         class_name: "slider",
         hexpand: true,
         draw_value: false,
@@ -58,7 +55,7 @@ function Brightness()
                     case v > 0:
                         return "󰃞";
                     default:
-                        return "";
+                        return "󰃞";
                 }
             }),
     });
@@ -95,7 +92,7 @@ function Volume()
     })
 
     const slider = Widget.Slider({
-        hexpand: true,
+        width_request: 100,
         draw_value: false,
         class_name: "slider",
         on_change: ({ value }) => (audio.speaker.volume = value),
@@ -172,22 +169,36 @@ function PinBar()
             barLock.value = self.active
             self.label = self.active ? "" : "";
         },
-        class_name: "panel-trigger icon",
+        class_name: "panel-lock icon",
         label: barLock.value ? "" : "",
     })
 }
 
-function RightPanel()
+// function RightPanel()
+// {
+//     return Widget.ToggleButton({
+//         onToggled: ({ active }) => rightPanelVisibility.value = active,
+//         class_name: "panel-trigger icon",
+//     }).hook(rightPanelVisibility, (self) =>
+//     {
+//         self.active = rightPanelVisibility.value
+//         self.label = rightPanelVisibility.value ? "" : ""
+//     }, "changed");
+// }
+
+function DndToggle() 
 {
     return Widget.ToggleButton({
-        onToggled: ({ active }) => rightPanelVisibility.value = active,
-        class_name: "panel-trigger icon",
-    }).hook(rightPanelVisibility, (self) =>
+        active: DND.value,
+        on_toggled: ({ active }) => DND.value = active,
+        class_name: "dnd-toggle icon",
+    }).hook(DND, (self) =>
     {
-        self.active = rightPanelVisibility.value
-        self.label = rightPanelVisibility.value ? "" : ""
+        self.active = DND.value
+        self.label = DND.value ? "" : ""
     }, "changed");
 }
+
 
 export function Right()
 {
@@ -202,7 +213,8 @@ export function Right()
             SysTray(),
             Theme(),
             PinBar(),
-            RightPanel(),
+            DndToggle(),
+            // RightPanel(),
         ],
     });
 }

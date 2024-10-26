@@ -1,4 +1,3 @@
-@import "../../../.cache/wal/colors.scss";
 @import "colors.scss";
 
 @import "lib.scss";
@@ -21,8 +20,10 @@
 @import "widgets/cava.scss";
 @import "widgets/calendar.scss";
 @import "widgets/update.scss";
-
-@import "wallpaper/style.scss";
+@import "widgets/settings-widget.scss";
+@import "widgets/wallpaper-switcher.scss";
+@import "widgets/user-panel.scss";
+@import "widgets/notification-history.scss";
 
 // Use the variables in the styles
 window {

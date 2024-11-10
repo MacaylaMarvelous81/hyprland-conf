@@ -1,26 +1,29 @@
 .user-panel {
-  button {
-    background: $module-background;
-    &:hover {
-      background: $background;
-      text-shadow: $foreground 0 0 1px;
+  // .player,
+  // .notification,
+  // .resources,
+  // .date,
+  // .actions button,
+  // .profile {
+  //   border: 1px solid $tertiary;
+  // }
+  .window-actions {
+    .close {
+      padding: 10px 20px;
+      font-size: 1.5rem;
     }
   }
-  .close {
-    padding: 10px 20px;
-    font-size: 1.5rem;
-  }
+
   .player {
     min-width: 200px;
   }
   .middle {
     min-width: 300px;
-
-    .date {
-      @extend .module;
-      padding: 20px;
-      font-size: 3rem;
-    }
+  }
+  .date {
+    @extend .module;
+    padding: 20px;
+    font-size: 3rem;
   }
   .profile {
     @extend .module;
@@ -33,7 +36,7 @@
       }
     }
     .up-time {
-      color: $tertiary;
+      color: $grey;
     }
     .profile-picture {
       min-width: 200px;
@@ -53,11 +56,16 @@
       }
     }
   }
-  .actions {
+  .system-actions {
     button {
       min-height: 69px;
       min-width: 69px;
       font-size: 3em;
+      background: $module-background;
+      &:hover {
+        background: $background;
+        text-shadow: $foreground 0 0 1px;
+      }
     }
   }
 }

@@ -23,8 +23,6 @@ button,
 .button {
   @extend .module;
   background: $secondary-background;
-  min-height: 20px;
-  text-shadow: $background 0 0 1px;
   &:hover {
     background: $background;
     text-shadow: $foreground 0 0 1px;
@@ -32,11 +30,10 @@ button,
   &:focus,
   &:checked {
     outline: none;
-    border-color: transparent;
-    box-shadow: none;
+    // border-color: transparent;
   }
   &:checked {
-    background: $color10;
+    background: $secondary;
     color: $color0;
   }
 }
@@ -80,7 +77,7 @@ entry {
 }
 
 separator {
-  border-top: 1px solid $module-secondary;
+  border-top: 1px solid $secondary;
 }
 
 menu {
@@ -112,9 +109,18 @@ levelbar {
   }
 }
 
+switch {
+  @extend .module;
+  margin: 0;
+  padding: 0;
+  slider {
+    @extend .slider;
+  }
+}
+
 scrolledwindow {
   slider {
-    background: $module-secondary;
+    background: $secondary;
   }
 }
 
@@ -131,21 +137,27 @@ scrolledwindow {
 }
 
 .slider {
-  margin: 5px;
-  padding: 0;
+  padding: 0px 2px;
 
   trough {
     border-radius: 10px;
-  }
+    background: $module-background;
+    color: black;
 
-  slider {
-    min-height: 1px;
-    min-width: 10px;
-    margin: -5px;
+    slider {
+      background: transparent;
+      min-height: 0px;
+      min-width: 0px;
+      margin: 5px;
+    }
+
+    highlight {
+      background: $secondary;
+    }
   }
 
   &:hover highlight {
-    background-color: mix($color4, #ffffff, 50%);
+    background: $tertiary;
   }
 }
 

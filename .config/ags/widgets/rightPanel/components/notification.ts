@@ -20,7 +20,6 @@ function NotificationIcon({ app_entry, app_icon, image })
                 + "background-size: cover;"
                 + "background-repeat: no-repeat;"
                 + "background-position: center;"
-            // + `box-shadow: 0 0 5px 0 ${getDominantColor(image)};`
         })
     }
 
@@ -150,7 +149,7 @@ export function Notification_(n: Notification, new_Notification = false, popup =
             on_clicked: () =>
             {
                 Revealer.reveal_child = false;
-                timeout(TRANSITION, () => { n.close(); Revealer.destroy() })
+                timeout(globalTransition, () => { n.close(); Revealer.destroy() })
             },
         }),
     })

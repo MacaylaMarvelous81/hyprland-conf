@@ -1,4 +1,4 @@
-import brightness from "brightness";
+import brightness from "services/brightness";
 import { barLock, DND, rightPanelVisibility } from "variables";
 import { closeProgress, openProgress } from "widgets/Progress";
 import { custom_revealer } from "widgets/revealer";
@@ -97,7 +97,7 @@ function Volume()
         width_request: 100,
         draw_value: false,
         class_name: "slider",
-        on_change: ({ value }) => (audio.speaker.volume = value),
+        on_change: ({ value }) => audio.speaker.volume = value,
     }).hook(audio.speaker, (self) =>
     {
         self.value = audio.speaker.volume || 0;

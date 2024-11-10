@@ -10,8 +10,6 @@
   &.widget {
     background-size: cover;
     background-position: center;
-    // box-shadow: 0px 0px 50px 69px rgba(0, 0, 0, 0.69) inset,
-    //   0px 0px 15px 15px rgba(0, 0, 0, 0.69) inset;
   }
 
   .img {
@@ -21,8 +19,6 @@
     background-position: center;
     border-radius: 10px;
     margin-right: 10px;
-
-    // box-shadow: 0px 0px 5px rgba($foreground, 0.5);
   }
 
   .title {
@@ -50,29 +46,29 @@
     margin: 0 0.3em;
   }
 
-  scale.slider {
-    margin-bottom: 0.3em;
-    padding: 10px 0px;
-  }
+  // scale.slider {
+  //   margin-bottom: 0.3em;
+  //   padding: 10px 0px;
+  // }
 
-  scale.slider trough {
-    min-height: 5px;
-    background: $background;
-    border: unset;
-  }
+  // scale.slider trough {
+  //   min-height: 5px;
+  //   background: $background;
+  //   border: unset;
+  // }
 
-  scale.slider highlight {
-    border: unset;
-    // background: $secondary;
-  }
+  // scale.slider highlight {
+  //   border: unset;
+  //   // background: $secondary;
+  // }
 
-  scale.slider slider {
-    all: unset;
-    border: none;
-    min-height: 10px;
-    min-width: 20px;
-    margin: -5px;
-    border-radius: 10px;
-    background: $foreground;
-  }
+  // scale.slider slider {
+  //   all: unset;
+  //   border: none;
+  //   min-height: 10px;
+  //   min-width: 20px;
+  //   margin: -5px;
+  //   border-radius: 10px;
+  //   background: $foreground;
+  // }
 }

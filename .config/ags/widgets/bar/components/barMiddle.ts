@@ -5,7 +5,7 @@ import { MprisPlayer } from "types/service/mpris";
 import { playerToColor } from "utils/color";
 import { playerToIcon } from "utils/icon";
 import { date_less, date_more, emptyWorkspace, globalTransition } from "variables";
-import CavaWidget from "widgets/cava/Cava";
+import CavaWidget from "widgets/Cava";
 import { custom_revealer } from "widgets/revealer";
 
 
@@ -79,21 +79,22 @@ function Media()
 function Clock()
 {
     const revealer = Widget.Label({
-        css: "margin: 0px;",
+        class_name: "revealer",
         label: date_more.bind()
     })
     const trigger = Widget.Label({
+        class_name: "trigger",
         label: date_less.bind()
     })
 
-    return custom_revealer(trigger, revealer, "date");
+    return custom_revealer(trigger, revealer, "clock");
 }
 
 function Bandwidth()
 {
     const bandwidth = Variable("", {
         // listen to an array of [up, down] values
-        listen: [App.configDir + '/scripts/bandwidth.sh', out =>
+        listen: [`bash ${App.configDir}/scripts/bandwidth.sh`, out =>
         {
             return "↑" + JSON.parse(out)[0] + " ↓" + JSON.parse(out)[1];
         }],

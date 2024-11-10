@@ -5,8 +5,7 @@ import NotificationHistory from "./rightPanel/NotificationHistory";
 
 const Hyprland = await Service.import("hyprland");
 
-const pfpPath = Utils.exec(`bash -c "echo $HOME/.face"`)
-const pfp = Variable<string>(pfpPath)
+const pfpPath = Utils.exec(`bash -c "echo $HOME/.face.icon"`)
 const username = Utils.exec(`whoami`)
 const uptime = Variable(('-'), {
     poll: [600000, 'uptime -p']
@@ -53,9 +52,9 @@ const UserPanel = () =>
                 {
                     if (!uri) return;
                     const cleanUri = uri.replace('file://', ''); // Remove 'file://' from the URI
-                    Utils.execAsync(`bash -c "cp '${cleanUri}' $HOME/.face"`)
+                    Utils.execAsync(`bash -c "cp '${cleanUri}' ${pfpPath}"`)
                         .then(() => ProfilePicture.css = `background-image: url('${pfpPath}');`)
-                        .finally(() => { Utils.notify(`Profile picture set to ${cleanUri}`) })
+                        .finally(() => { Utils.notify(`Profile picture ${cleanUri} set to ${pfpPath}`) })
                         .catch(err => Utils.notify(err));
                 },
             })
@@ -117,7 +116,7 @@ const UserPanel = () =>
         })
 
         return Widget.Box({
-            class_name: "actions",
+            class_name: "system-actions",
             vertical: true,
             spacing: 10,
             children: [

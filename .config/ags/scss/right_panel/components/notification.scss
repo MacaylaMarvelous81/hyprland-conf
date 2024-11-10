@@ -11,6 +11,17 @@
     border-radius: 10px 0px 0px 10px;
   }
 
+  .copy {
+    padding: 0px;
+    min-width: 15px;
+  }
+
+  .close {
+    @extend .danger;
+    min-width: 15px;
+    padding: 0px;
+  }
+
   .main-content {
     padding: 10px;
   }
@@ -45,15 +56,9 @@
   }
 
   .body {
-    color: $module-secondary;
+    color: $secondary;
     font-size: 1em;
   }
-
-  .close {
-    @extend .danger;
-    padding: 0px 5px;
-  }
-
   .actions {
     button {
       // border-radius: 0px;

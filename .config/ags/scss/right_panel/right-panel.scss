@@ -1,7 +1,7 @@
 .right-panel {
   &.exclusive {
     border-radius: 0px;
-    border-left: 1px solid $secondary;
+    border-left: 1px solid $tertiary;
   }
   &.normal {
     border-radius: 15px;
@@ -25,7 +25,7 @@
     .custom-revealer,
     .icon {
       border-radius: 0px;
-      padding: 5px;
+      padding: 5px 0px;
     }
   }
 }

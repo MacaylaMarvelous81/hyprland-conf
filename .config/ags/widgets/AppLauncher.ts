@@ -5,6 +5,7 @@ import { closeProgress, openProgress } from "./Progress";
 import { containsProtocolOrTLD, formatToURL, getDomainFromURL } from "utils/url";
 import { arithmetic, containsOperator } from "utils/arithmetic";
 const Hyprland = await Service.import('hyprland')
+const { query } = await Service.import("applications")
 
 interface Result
 {
@@ -12,7 +13,8 @@ interface Result
     app_exec: string,
     app_arg?: string,
     app_type?: string,
-    app_icon?: string
+    app_icon?: string,
+    desktop?: string | null
 }
 
 const Results = Variable<Result[]>([])
@@ -75,7 +77,7 @@ function Entry()
 
                             if (args[0].includes("translate")) {
                                 let language = text.includes(">") ? text.split(">")[1].trim() : "en";
-                                Results.value = readJson(await Utils.execAsync(`${App.configDir}/scripts/translate.sh '${text.split(">")[0].replace("translate", "").trim()}' '${language}'`));
+                                Results.value = readJson(await Utils.execAsync(`bash ${App.configDir}/scripts/translate.sh '${text.split(">")[0].replace("translate", "").trim()}' '${language}'`));
                             } else if (args[0].includes("emoji")) {
                                 Results.value = readJSONFile(`${App.configDir}/assets/emojis/emojis.json`).filter(emoji => emoji.app_tags.toLowerCase().includes(text.replace("emoji", "").trim()));
                             } else if (containsProtocolOrTLD(args[0])) {
@@ -83,11 +85,16 @@ function Entry()
                             } else if (containsOperator(args[0])) {
                                 Results.value = [{ app_name: arithmetic(text), app_exec: `wl-copy ${arithmetic(text)}`, app_type: 'calc' }];
                             } else {
-                                Utils.execAsync(`${App.configDir}/scripts/app-search.sh ${text}`).then((output) => {
-                                    Results.value = readJson(output);
-                                    if (Results.value.length == 0)
-                                        Results.value = [{ app_name: `Try ${text}`, app_exec: text, app_icon: "󰋖" }];
-                                });
+                                Results.value = query(args.shift()!).map((app) => ({
+                                    app_name: app.name,
+                                    app_exec: app.executable,
+                                    app_arg: args.join(""),
+                                    app_type: "app",
+                                    app_icon: app["icon-name"],
+                                    desktop: app["desktop"]
+                                }));
+                                if (Results.value.length == 0)
+                                    Results.value = [{ app_name: `Try ${text}`, app_exec: text, app_icon: "󰋖" }];
                             }
                         } catch (err) {
                             print(err);
@@ -137,10 +144,18 @@ const organizeResults = (results: Result[]) =>
         {
             if (element.app_type == "app") {
                 openProgress()
-                Utils.execAsync(`${App.configDir}/scripts/app-loading-progress.sh ${element.app_name}`)
+                Utils.execAsync(`bash ${App.configDir}/scripts/app-loading-progress.sh ${element.app_name}`)
                     .then((workspace) => newAppWorkspace.value = Number(workspace))
                     .finally(() => closeProgress())
                     .catch(err => Utils.notify({ summary: "Error", body: err }));
+            }
+
+            if (element.desktop != null) {
+                Hyprland.messageAsync(`dispatch exec gtk-launch ${element.desktop}`).then(() =>
+                {
+                    App.closeWindow("app-launcher")
+                }).catch(err => Utils.notify({ summary: "Error", body: err }));
+                return;
             }
 
             Hyprland.messageAsync(`dispatch exec ${element.app_exec} ${element.app_arg || ""}`)
@@ -205,7 +220,7 @@ export default () =>
         exclusivity: "normal",
         keymode: "on-demand",
         layer: "top",
-        margins: [5, globalMargin, globalMargin, globalMargin], // top right bottom left
+        margins: [10, globalMargin, globalMargin, globalMargin], // top right bottom left
         visible: false,
 
         child: Widget.EventBox({
